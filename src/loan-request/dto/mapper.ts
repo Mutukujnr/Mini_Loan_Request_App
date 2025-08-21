@@ -6,7 +6,6 @@ export class LoanRequestMapper {
     const response = new LoanResponseDTO();
 
     response.amount = loanRequest.amount;
-    response.reason = loanRequest.reason;
     response.created_at = loanRequest.created_at;
     response.status = loanRequest.status;
     response.user = {

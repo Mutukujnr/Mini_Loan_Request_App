@@ -1,8 +1,6 @@
 export class LoanResponseDTO {
   amount: number;
 
-  reason: string;
-
   created_at: Date;
 
   updated_at: Date;

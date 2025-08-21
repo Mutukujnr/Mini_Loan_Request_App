@@ -2,11 +2,10 @@ import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class LoanRequestDTO {
   @IsNumber()
+  @IsNotEmpty()
   amount: number;
 
-  @IsNotEmpty()
-  reason: string;
-
   @IsNumber()
+  @IsNotEmpty()
   userId: number;
 }

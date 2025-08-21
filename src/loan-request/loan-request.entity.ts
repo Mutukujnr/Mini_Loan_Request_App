@@ -18,7 +18,7 @@ export class LoanRequest {
   @Column()
   amount: number;
 
-  @Column()
+  @Column({ default: null })
   reason: string;
 
   @Column({

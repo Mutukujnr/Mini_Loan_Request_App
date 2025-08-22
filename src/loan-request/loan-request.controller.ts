@@ -5,10 +5,12 @@ import { LoanResponseDTO } from './dto/loan-response.dto';
 import { LoanRequestService } from './loan-request.service';
 import { LoanRequest } from './loan-request.entity';
 import { LoanStatus } from 'src/enums/loan-status.enum';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Controller('loan')
 export class LoanRequestController {
-  constructor(private loanService: LoanRequestService) { }
+  constructor(private loanService: LoanRequestService, @InjectRepository(LoanRequest) private loanRepository: Repository<LoanRequest>) { }
   @Post('request')
   async createLoan(
     @Body() createLoan: LoanRequestDTO,
@@ -31,6 +33,11 @@ export class LoanRequestController {
     return this.loanService.findLoanRequestById(id);
   }
 
+  // @Patch(':id')
+  // async updateLoanREquest(@Param('id') id: number, @Body() loanUpdateDTO: LoanUpdateDTO): Promise<LoanResponseDTO> {
+  //   return this.loanService.updateLoanRequest(id, loanUpdateDTO);
+  // }
+
   @Get('pending/:userId')
   async getPendingCounts(@Param('userId', ParseIntPipe) userId:number): Promise<number> {
     return this.loanService.findUserLoanRequestPendingStatus(userId);
@@ -47,6 +54,29 @@ export class LoanRequestController {
     Logger.log('payload received', JSON.stringify(payload));
     Logger.log(`loan id ${payload.loan_id}`);
   }
+
+  // @Patch(':id')
+  // async updateLoanREquest(
+  //   @Param('id') id: number,
+  //   @Body() payload: { loan_id: number; status: LoanStatus; reason?: string; creditScore: string }
+  // ) {
+  //   id = payload.loan_id;
+  //   const payLoadData = {
+  //     status: payload.status,
+  //     reason: payload.reason,
+  //   }
+
+  //   const loan = await this.loanRepository.findOne({
+  //     where: { id: id }
+  //   });
+
+  //   if (!loan) {
+  //     throw new NotFoundException('loan not found');
+  //   }
+
+  //   Object.assign(loan, payLoadData);
+  //   return  await this.loanRepository.save(loan);
+  // }
 
   
 

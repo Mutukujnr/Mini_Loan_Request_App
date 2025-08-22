@@ -57,11 +57,6 @@ CREATE DATABASE loan_request_db;
 
    npm run start:dev
 
-   # Production mode
-
-   npm run build
-   npm run start:prod
-
 The API will be available at `http://localhost:3000`
 
 6. API Documentation
@@ -85,7 +80,14 @@ The API will be available at `http://localhost:3000`
 | GET    | `/loan/:id`                  | Get loan request by ID                | -              |
 | GET    | `/loan/pending/:userId`      | Get user's pending loan status        | -              |
 | GET    | `/loan/user/:userId`         | Get loans by user ID                  | -              |
+| GET    | `/loan/:status`              | Get loans by status                   | -              |
 | DELETE | `/loan/:id`                  | Delete loan                           |                |
+
+-Mock credit-api Endpoints
+|Method | Endpoint |Description |Body |
+|-------|------------------------------|---------------------------------------|----------------|
+|POST | `/mock-credit-api/score` | updates score, rason and status and | - |
+| | | sends to the callback url | |
 
 7.  Data Models
 
@@ -207,16 +209,16 @@ src/
 │ ├── dto/
 │ │ ├──loan-request.dto.ts
 │ │ └── loan-response.dto.ts
-│ |\*\* loan-request.entity.ts
+│ |** loan-request.entity.ts
 │ ├── loan-request.controller.ts
 │ ├── loan-request.service.ts
 │ └── loan-request.module.ts
-|** mock-credit-api
+|**mock-credit-api
 | |**mock-credit-api.controller.ts
 | |**mock-credit-api.module.ts
 ├── app.controller.ts
 |** app.modules.ts
-|\_\_ app.service.ts
+|** app.service.ts
 └── main.ts
 
 12. Error Handling

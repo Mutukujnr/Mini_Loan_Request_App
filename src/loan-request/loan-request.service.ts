@@ -14,6 +14,7 @@ import { UserService } from 'src/user/user.service';
 import { LoanStatus } from 'src/enums/loan-status.enum';
 import { HttpService } from '@nestjs/axios';
 import { Cron } from '@nestjs/schedule';
+import { LoanUpdateDTO } from './dto/loan-update.dto';
 
 @Injectable()
 export class LoanRequestService {
@@ -149,5 +150,23 @@ export class LoanRequestService {
       relations: ['user'],
     });
     return loans.map((loan) => LoanRequestMapper.mapToDto(loan));
+  }
+
+  async updateLoanRequest(
+    id: number,
+    loanUpdateDTO: LoanUpdateDTO,
+  ): Promise<LoanResponseDTO> {
+    const loan = await this.loanRepository.findOne({
+      where: { id: loanUpdateDTO.loan_id },
+    });
+
+    if (!loan) {
+      throw new NotFoundException('loan not found');
+    }
+
+    Object.assign(loan, loanUpdateDTO);
+    const updatedLoan = await this.loanRepository.save(loan);
+
+    return LoanRequestMapper.mapToDto(updatedLoan);
   }
 }

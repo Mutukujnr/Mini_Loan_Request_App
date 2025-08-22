@@ -36,7 +36,6 @@ export class LoanRequest {
 
   @ManyToOne(() => User, (user) => user.loanRequests, {
     cascade: true,
-    eager: true,
   })
   @JoinColumn({ name: 'userId' })
   user: User;

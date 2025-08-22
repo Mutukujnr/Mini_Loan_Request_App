@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { UserResponseDTO } from './dto/user-response.dto';
 import { UserRequestDTO } from './dto/user-request.dto';
 import { Mapper } from './dto/mapper';
+import { UserUpdateDTO } from './dto/user-update.dto';
 
 @Injectable()
 export class UserService {
@@ -64,5 +65,24 @@ export class UserService {
     if (result.affected === 0) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
+  }
+
+  async updateUser(
+    id: number,
+    userUpdateDTO: UserUpdateDTO,
+  ): Promise<UserResponseDTO> {
+    const user = await this.userRepository.findOne({
+      where: { id: userUpdateDTO.id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+
+    Object.assign(user, userUpdateDTO);
+
+    const updatedUser = await this.userRepository.save(user);
+
+    return Mapper.transformUserToDto(updatedUser);
   }
 }

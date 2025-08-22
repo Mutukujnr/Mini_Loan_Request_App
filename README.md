@@ -1,98 +1,243 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+A comprehensive NestJS-based REST API for managing users and loan requests with complete CRUD operations, and user validation.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+1.Features
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+- User Management: Complete CRUD operations for user accounts
+- Loan Request Management: Complete CRUD operations for loan requests
+- User Validation: Ensures users exist before processing loan requests
+- Comprehensive Responses: Loan requests return complete user data
+- Data Validation: Robust input validation using class-validator
+- TypeORM Integration: Database relationships
+- RESTful API: Standard HTTP methods and status codes
 
-## Description
+  2.Tech Stack
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Framework: NestJS 10.x
+- Database: MySQL with TypeORM
+- Validation: Class-validator & Class-transformer
+- Language: TypeScript
+- Node.js: 18.x or higher
 
-## Project setup
+=> Before you begin, ensure you have the following installed:
 
-```bash
-$ npm install
-```
+- Node.js (18.x or higher)
+- MySQL (8.0 or higher)
+- npm or yarn
 
-## Compile and run the project
+  3.Installation
 
-```bash
-# development
-$ npm run start
+a). Clone the repository
+git clone <repository-url>
+cd user-loan-management-system
 
-# watch mode
-$ npm run start:dev
+b). Install dependencies
+npm install
 
-# production mode
-$ npm run start:prod
-```
+c). Database Setup
+CREATE DATABASE loan_request_db;
 
-## Run tests
+4. Configure Database Connection
 
-```bash
-# unit tests
-$ npm run test
+   =>Update the database configuration in `src/app.module.ts`:
 
-# e2e tests
-$ npm run test:e2e
+   TypeOrmModule.forRoot({
+   type: 'mysql',
+   host: 'localhost',
+   port: 3306,
+   username: 'your_username',
+   password: 'your_password',
+   database: 'loan_request_db',
+   entities: [User, LoanRequest],//omit this if you have set
+   synchronize: true, // Set to false in production
+   })
 
-# test coverage
-$ npm run test:cov
-```
+5. Run the application
 
-## Deployment
+   # Development mode
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+   npm run start:dev
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+   # Production mode
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+   npm run build
+   npm run start:prod
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The API will be available at `http://localhost:3000`
 
-## Resources
+6. API Documentation
 
-Check out a few resources that may come in handy when working with NestJS:
+   -User Endpoints
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+| Method | Endpoint            | Description       | Body           |
+| ------ | ------------------- | ----------------- | -------------- |
+| POST   | `/users/create`     | Create a new user | userRequestDTO |
+| GET    | `/users/all`        | Get all users     |                |
+| GET    | `/users/:id`        | Get user by ID    | -              |
+| DELETE | `/users/delete/:id` | Delete user       | -              |
 
-## Support
+-Loan Request Endpoints
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+| Method | Endpoint                     | Description Body                      |
+| ------ | ---------------------------- | ------------------------------------- | -------------- |
+| POST   | `/loan/request`              | Create loan request                   | LoanRequestDto |
+| POST   | `/loan/webhook/credit-score` | Receives updated from mock-credit-api |                |
+| GET    | `/loan/all`                  | Get all loan requests                 | -              |
+| GET    | `/loan/:id`                  | Get loan request by ID                | -              |
+| GET    | `/loan/pending/:userId`      | Get user's pending loan status        | -              |
+| GET    | `/loan/user/:userId`         | Get loans by user ID                  | -              |
+| DELETE | `/loan/:id`                  | Delete loan                           |                |
 
-## Stay in touch
+7.  Data Models
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+User Entity
+{
+id: number;
+email: string;
+name: string;
+phone_umber: string;
+created_at: Date;
+updated_at: Date;
+}
 
-## License
+Loan Request Entity
+{
+id: number;
+amount: number;
+status: 'PENDING' | 'APPROVED' | 'REJECTED' | ;
+reeson: string;
+userId: number;
+user: User;
+created_at: Date;
+updated_at: Date;
+}
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+8. API Usage Examples
+
+-Create User
+POST /users/create
+Content-Type: application/json
+
+{
+"email": "john.doe@example.com",
+"name": "John Doe",
+"phone_number": "+2544567890",
+"password": 1234
+}
+
+-Create Loan Request
+
+POST /loan/request
+Content-Type: application/json
+
+{
+"amount": 50000,
+"userId": 1
+}
+
+=> Response includes both loan request and user data:
+
+{
+"amount": 20000,
+"created_at": "2025-08-22T07:35:59.061Z",
+"status": "pending",
+"user": {
+"name": "john",
+"email": "john.doe@example.com",
+"phone_number": "1234567890"
+}
+}
+
+9.  Validation Rules
+
+User Validation
+
+- Email must be valid and unique
+- Name is required
+- Phone number is required
+
+  Loan Request Validation
+
+- Amount must be between $1,000 - $1,000,000
+- User ID must reference an existing user
+- Loan status must be valid enum value
+
+10. Testing
+
+Using Postman/ insomnia
+
+1. Set environment variable: `baseUrl = http://localhost:3000`
+2. Create users first, then loan requests
+3. Test all CRUD operations
+
+Test Data
+
+Test ummy data:
+
+- sample user data
+
+  {
+  "name": "John Garcia",
+  "email": "john.doe@example.com",
+  "phone_number": "+25412345678",
+  "password": "john1234"
+  }
+
+- Loan requests data
+  {
+  "amount": "40000",
+  "userId" 1 (must be an existing user)
+  }
+
+11. Project Structure
+
+src/
+|** enums
+| |** loan-status.enum.ts
+├── user/
+│ ├── dto/
+│ │ ├── user-request.dto.ts
+│ │ └── user-response.dto.ts
+| | |** mapper.ts
+│ ├── entities/
+│ │** user.entity.ts
+│ ├── user.controller.ts
+│ ├── user.service.ts
+│ └── user.module.ts
+├── loan-request/
+│ ├── dto/
+│ │ ├──loan-request.dto.ts
+│ │ └── loan-response.dto.ts
+│ |\*\* loan-request.entity.ts
+│ ├── loan-request.controller.ts
+│ ├── loan-request.service.ts
+│ └── loan-request.module.ts
+|** mock-credit-api
+| |**mock-credit-api.controller.ts
+| |**mock-credit-api.module.ts
+├── app.controller.ts
+|** app.modules.ts
+|\_\_ app.service.ts
+└── main.ts
+
+12. Error Handling
+
+The API provides comprehensive error handling:
+
+- 400 Bad Request: Invalid input data or validation errors
+- 404 Not Found: Resource doesn't exist
+- 500 Internal Server Error: Server-side errors
+  -409 Conflict
+
+Example error response:
+{
+"message": "duplicate pending loan status",
+"error": "Conflict",
+"statusCode": 409
+}
+
+13. Security features
+
+-Input validation on all endpoints
+-SQL injection prevention through TypeORM
+-Type safety with TypeScript
+-Request validation with class-validator

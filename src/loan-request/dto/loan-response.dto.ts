@@ -1,4 +1,6 @@
 export class LoanResponseDTO {
+  id: number;
+
   amount: number;
 
   created_at: Date;
@@ -7,7 +9,7 @@ export class LoanResponseDTO {
 
   status: string;
 
-  user?: {
+  user: {
     name: string;
     email: string;
     phone_number: string;

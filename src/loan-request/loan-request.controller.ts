@@ -4,6 +4,7 @@ import { LoanRequestDTO } from './dto/loan-request.dto';
 import { LoanResponseDTO } from './dto/loan-response.dto';
 import { LoanRequestService } from './loan-request.service';
 import { LoanRequest } from './loan-request.entity';
+import { LoanStatus } from 'src/enums/loan-status.enum';
 
 @Controller('loan')
 export class LoanRequestController {
@@ -13,6 +14,16 @@ export class LoanRequestController {
     @Body() createLoan: LoanRequestDTO,
   ): Promise<LoanResponseDTO> {
     return await this.loanService.createLoanRequest(createLoan);
+  }
+
+  @Get('all')
+  async getAllLoans(): Promise<LoanResponseDTO[]> {
+    return this.loanService.findAllLoanRequests();
+  }
+
+  @Get(':status')
+  async getLoanByStatus(@Param('status') status: LoanStatus): Promise<LoanResponseDTO[]> {
+    return await this.loanService.findLoanByStatus(status);
   }
 
   @Get(':id')
@@ -29,16 +40,15 @@ export class LoanRequestController {
     const loans = await this.loanService.findUserLoans(userId);
     return loans;
   }
-  @Get('all')
-  async getAllLoans(): Promise<LoanResponseDTO[]> {
-    return this.loanService.findAllLoanRequests();
-  }
 
   @Post('webhook/credit-score')
-  displayData(@Body() payload) {
+  displayData(@Body() payload: { loan_id: number; [key: string]: any }) {
     
-    Logger.log('payload received',payload);
+    Logger.log('payload received', JSON.stringify(payload));
+    Logger.log(`loan id ${payload.loan_id}`);
   }
+
+  
 
   
 }

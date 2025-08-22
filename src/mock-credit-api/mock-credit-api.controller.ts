@@ -1,21 +1,22 @@
 import { HttpService } from '@nestjs/axios';
 import { Body, Controller, Post } from '@nestjs/common';
 import { LoanStatus } from 'src/enums/loan-status.enum';
-import { LoanRequest } from 'src/loan-request/loan-request.entity';
+import { LoanResponseDTO } from 'src/loan-request/dto/loan-response.dto';
 
 @Controller('mock-credit-api')
 export class MockCreditApiController {
   constructor(private httpService: HttpService) {}
   @Post('score')
   asignScoreToLoanRequest(
-    @Body() payload: { savedLoan: LoanRequest; callback_url: string },
+    @Body() payload: { savedLoan: LoanResponseDTO; callback_url: string },
   ) {
+    const loan_id = payload.savedLoan.id;
     const creditSCore = 720;
     const status = LoanStatus.APPROVED;
     const reason = 'Good credit history';
 
     const responceData = {
-      loan_id: 'uuid',
+      loan_id: loan_id,
       creditSCore: creditSCore,
       status: status,
       reason: reason,

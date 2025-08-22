@@ -52,36 +52,82 @@ export class LoanRequestService {
     if (!savedLoan) {
       throw new NotFoundException('Loan request not found');
     }
+    const savedLoanDTO = LoanRequestMapper.mapToDto(savedLoan);
 
-    this.WebHookHandler(savedLoan);
+    this.WebHookHandler(savedLoanDTO);
 
-    return LoanRequestMapper.mapToDto(savedLoan);
+    return savedLoanDTO;
   }
 
-  @Cron('10 * * * * *')
-  WebHookHandler(savedLoan: LoanRequest) {
+  WebHookHandler(savedLoan: LoanResponseDTO) {
     const webhook_api = 'http://localhost:3000/mock-credit-api/score';
     const callback_url = 'http://localhost:3000/loan/webhook/credit-score';
 
     this.httpService.post(webhook_api, { savedLoan, callback_url }).subscribe({
       complete: () => {
-        console.log('data send successfully to a third party');
+        //console.log('data send successfully to mock credit api');
       },
       error: () => {
-        console.log('data not send');
+        //console.log('data not send');
       },
     });
   }
 
+  @Cron('10 * * * * *')
+  async processPendingLoans() {
+    try {
+      const pendingLoans = await this.findLoanByStatus(LoanStatus.PENDING);
+      if (pendingLoans.length === 0) {
+        console.log('No pending loans to process');
+        return;
+      }
+
+      for (const loan of pendingLoans) {
+        this.WebHookHandler(loan);
+      }
+
+      // const userInfo = await this.getPendingLoanStatusInfoForUser();
+      // console.log(
+      //   `Processing pending loan for user ${JSON.stringify(userInfo)}`,
+      // );
+
+      console.log(`processing ${pendingLoans.length} pending loans`);
+    } catch (error) {
+      console.log('Error processing pending loans:', error);
+    }
+  }
+
+  async getPendingLoanStatusInfoForUser(): Promise<any[]> {
+    const users = await this.findLoanByStatus(LoanStatus.PENDING);
+
+    // return only the nested user objects
+    return users.map((u) => u.user);
+  }
+
+  async findLoanByStatus(status: LoanStatus): Promise<LoanResponseDTO[]> {
+    const loans = await this.loanRepository.find({
+      where: {
+        status: status,
+      },
+      relations: ['user'],
+    });
+
+    if (!loans) {
+      throw new NotFoundException(`No loan was found ${status}`);
+    }
+
+    return loans.map((loan) => LoanRequestMapper.mapToDto(loan));
+  }
+
   async findLoanRequestById(id: number): Promise<LoanRequest | null> {
-    return this.loanRepository.findOne({
+    return await this.loanRepository.findOne({
       where: { id },
       relations: ['user'],
     });
   }
 
   async findUserLoanRequestPendingStatus(userId: number): Promise<number> {
-    return this.loanRepository.count({
+    return await this.loanRepository.count({
       where: {
         userId,
         status: LoanStatus.PENDING,
@@ -91,7 +137,7 @@ export class LoanRequestService {
   }
 
   async findAllLoanRequests(): Promise<LoanResponseDTO[]> {
-    const loans_requests: LoanRequest[] = await this.loanRepository.find({
+    const loans_requests = await this.loanRepository.find({
       relations: ['user'],
     });
     return loans_requests.map((loan) => LoanRequestMapper.mapToDto(loan));

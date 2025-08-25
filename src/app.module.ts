@@ -6,6 +6,10 @@ import { UserModule } from './user/user.module';
 import { LoanRequestModule } from './loan-request/loan-request.module';
 import { MockCreditApiModule } from './mock-credit-api/mock-credit-api.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { JwtAuthGuard } from './auth/guards/auth.jwt-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -20,12 +24,22 @@ import { ScheduleModule } from '@nestjs/schedule';
       autoLoadEntities: true,
       logging: true,
     }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     UserModule,
     LoanRequestModule,
     MockCreditApiModule,
     ScheduleModule.forRoot(),
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

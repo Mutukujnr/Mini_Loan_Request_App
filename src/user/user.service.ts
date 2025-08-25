@@ -6,6 +6,7 @@ import { UserResponseDTO } from './dto/user-response.dto';
 import { UserRequestDTO } from './dto/user-request.dto';
 import { Mapper } from './dto/mapper';
 import { UserUpdateDTO } from './dto/user-update.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -26,14 +27,18 @@ export class UserService {
         `user with the email ${userRequest.email} already exists`,
       );
     }
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(userRequest.password, salt);
     const newUser = this.userRepository.create({
       name: userRequest.name,
       email: userRequest.email,
-      password: userRequest.password,
+      password: hashedPassword,
       phone_number: userRequest.phone_number,
     });
 
     const savedUser = await this.userRepository.save(newUser);
+    //delete savedUser.password;
 
     return Mapper.transformUserToDto(savedUser);
   }
@@ -56,8 +61,20 @@ export class UserService {
     return savedUser;
   }
 
-  findUserByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } });
+  findUserByEmail(
+    email: string,
+    selectSecrets: boolean = false,
+  ): Promise<User | null> {
+    return this.userRepository.findOne({
+      where: { email },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone_number: true,
+        password: selectSecrets,
+      },
+    });
   }
 
   async removeUser(id: number): Promise<void> {

@@ -16,7 +16,7 @@ export class User {
   @Column()
   phone_number: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @OneToMany(() => LoanRequest, (loanRequest) => loanRequest.user)

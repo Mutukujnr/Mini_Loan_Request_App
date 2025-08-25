@@ -13,11 +13,13 @@ import { UserRequestDTO } from './dto/user-request.dto';
 import { UserResponseDTO } from './dto/user-response.dto';
 import { User } from './user.entity';
 import { UserUpdateDTO } from './dto/user-update.dto';
+import { SkipAuth } from 'src/common/decorators/public.decorator';
 
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @SkipAuth()
   @Post('create')
   async createUser(
     @Body() userDTO: UserRequestDTO,
